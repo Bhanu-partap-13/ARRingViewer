@@ -12,15 +12,11 @@
   model-viewer {
     --progress-bar-height: 2px;
     --progress-bar-color: #D4AF37;
-    touch-action: none;
-    -webkit-user-select: none;
-    user-select: none;
   }
   
   model-viewer canvas {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
-    touch-action: none;
   }
 }
 
