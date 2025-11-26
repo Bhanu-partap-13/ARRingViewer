@@ -56,10 +56,21 @@ const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
   return (
     <div 
       className="relative w-full h-full min-h-[500px] bg-transparent rounded-lg shadow-2xl"
-      onWheel={(e) => e.stopPropagation()}
+      onWheel={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onDoubleClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       onTouchStart={(e) => e.stopPropagation()}
       onTouchMove={(e) => e.stopPropagation()}
-      style={{ touchAction: 'pan-y pinch-zoom' }}
+      style={{ 
+        touchAction: 'none',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+      }}
     >
       {/* Loading Animation */}
       {isLoading && (
@@ -113,9 +124,10 @@ const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
         ar
         ar-modes="webxr scene-viewer quick-look"
         camera-controls
-        touch-action="pan-y pinch-zoom"
+        touch-action="none"
+        disable-tap
         disable-zoom={false}
-        enable-pan
+        interpolation-decay="200"
         auto-rotate
         auto-rotate-delay="1000"
         rotation-per-second="30deg"
@@ -133,6 +145,7 @@ const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
           height: '100%',
           minHeight: '500px',
           backgroundColor: 'transparent',
+          outline: 'none',
         }}
       >
         {/* AR Button */}
