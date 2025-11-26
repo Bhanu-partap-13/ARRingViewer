@@ -5,17 +5,22 @@
 @layer base {
   body {
     @apply bg-luxury-lightGray text-luxury-dark font-sans;
+    overscroll-behavior: contain;
   }
   
   /* Smooth rendering for model-viewer */
   model-viewer {
     --progress-bar-height: 2px;
     --progress-bar-color: #D4AF37;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
   
   model-viewer canvas {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
+    touch-action: none;
   }
 }
 

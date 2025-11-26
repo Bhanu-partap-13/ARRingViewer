@@ -3,6 +3,18 @@ import React, { useEffect, useRef, useState } from 'react';
 const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
   const modelViewerRef = useRef(null);
   const [canAR, setCanAR] = useState(false);
+  
+  // Construct absolute URL for AR (iOS requires full URL)
+  const getModelUrl = () => {
+    if (modelPath.startsWith('http')) {
+      return modelPath;
+    }
+    // For development and production
+    const baseUrl = window.location.origin;
+    return `${baseUrl}${modelPath}`;
+  };
+  
+  const modelUrl = getModelUrl();
 
   useEffect(() => {
     const checkAR = async () => {
@@ -11,24 +23,43 @@ const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
         setCanAR(supportsAR);
         console.log('AR Support:', supportsAR);
         console.log('Model Path:', modelPath);
+        console.log('Full Model URL:', modelUrl);
+        console.log('Origin:', window.location.origin);
+        
+        // Prevent scroll on model viewer
+        const viewer = modelViewerRef.current;
+        viewer.addEventListener('touchstart', (e) => {
+          e.stopPropagation();
+        }, { passive: false });
+        
+        viewer.addEventListener('touchmove', (e) => {
+          e.stopPropagation();
+        }, { passive: false });
       }
     };
     
     // Wait for model-viewer to be ready
     const timer = setTimeout(checkAR, 500);
     return () => clearTimeout(timer);
-  }, [modelPath]);
+  }, [modelPath, modelUrl]);
 
   return (
-    <div className="relative w-full h-full min-h-[500px] bg-transparent rounded-lg shadow-2xl">
+    <div 
+      className="relative w-full h-full min-h-[500px] bg-transparent rounded-lg shadow-2xl"
+      onTouchStart={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+      style={{ touchAction: 'none' }}
+    >
       <model-viewer
         ref={modelViewerRef}
-        src={modelPath}
-        ios-src={modelPath}
+        src={modelUrl}
+        ios-src={modelUrl}
         alt={alt || productName}
         ar
-        ar-modes="scene-viewer webxr quick-look"
+        ar-modes="webxr scene-viewer quick-look"
         camera-controls
+        touch-action="none"
+        disable-zoom={false}
         auto-rotate
         auto-rotate-delay="1000"
         rotation-per-second="30deg"
@@ -45,6 +76,7 @@ const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
           height: '100%',
           minHeight: '500px',
           backgroundColor: 'transparent',
+          touchAction: 'none',
         }}
       >
         {/* AR Button - model-viewer creates this automatically */}
@@ -56,18 +88,20 @@ const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
             borderRadius: '9999px',
             border: 'none',
             position: 'absolute',
-            bottom: '16px',
+            bottom: '80px',
             right: '16px',
-            padding: '12px 24px',
+            padding: '14px 28px',
             fontSize: '14px',
             color: 'white',
-            fontWeight: '600',
+            fontWeight: '700',
             textTransform: 'uppercase',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            boxShadow: '0 8px 16px rgba(212, 175, 55, 0.4)',
+            zIndex: 1000,
+            letterSpacing: '1px',
           }}
         >
           <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
