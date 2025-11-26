@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import '@google/model-viewer';
 
 const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
   const modelViewerRef = useRef(null);
