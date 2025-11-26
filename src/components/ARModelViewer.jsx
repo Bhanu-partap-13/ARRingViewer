@@ -3,6 +3,7 @@ import '@google/model-viewer';
 
 const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
   const modelViewerRef = useRef(null);
+  const [isARSupported, setIsARSupported] = React.useState(true);
 
   useEffect(() => {
     // Ensure model-viewer is loaded and configured for smooth rendering
@@ -14,6 +15,11 @@ const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
         viewer.minCameraOrbit = 'auto auto 0.3m';
         viewer.maxCameraOrbit = 'auto auto 3m';
         viewer.interactionPromptThreshold = 0;
+        
+        // Check AR support
+        if (viewer.canActivateAR) {
+          setIsARSupported(true);
+        }
       }
     }, 100);
     
@@ -25,13 +31,13 @@ const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
       <model-viewer
         ref={modelViewerRef}
         src={modelPath}
+        ios-src={modelPath}
         alt={alt || productName}
         ar
-        ar-modes="webxr scene-viewer quick-look"
-        ar-scale="fixed"
+        ar-modes="scene-viewer webxr quick-look"
+        ar-scale="auto"
         camera-controls
         touch-action="pan-y"
-        disable-tap
         interpolation-decay="100"
         auto-rotate
         auto-rotate-delay="1000"
@@ -46,9 +52,9 @@ const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
         min-camera-orbit="auto auto 0.3m"
         max-camera-orbit="auto auto 3m"
         environment-image="neutral"
-        ios-src={modelPath}
-        skybox-image=""
         interaction-prompt="none"
+        loading="eager"
+        reveal="auto"
         style={{
           width: '100%',
           height: '100%',
@@ -92,7 +98,19 @@ const ARModelViewer = ({ modelPath, alt, goldType, productName }) => {
       <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
         <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
           <p className="text-xs text-luxury-darkGray font-sans">
-            👆 Drag to rotate • 🔍 Pinch to zoom • 📱 Tap AR to view in your space
+            👆 Drag to rotate • 🔍 Pinch to zoom
+          </p>
+        </div>
+      </div>
+
+      {/* AR Info Banner */}
+      <div className="absolute top-16 left-4 right-4">
+        <div className="bg-luxury-gold/90 backdrop-blur-sm px-4 py-3 rounded-lg shadow-lg text-white">
+          <p className="text-xs font-sans font-semibold mb-1">
+            📱 AR Mode Available!
+          </p>
+          <p className="text-xs font-sans">
+            Tap the "View in AR" button below to place this ring in your space using your phone's camera.
           </p>
         </div>
       </div>
